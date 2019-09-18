@@ -1,4 +1,4 @@
-package com.appengine.cloud;
+package com.app.full;
 
 import java.io.IOException;
 
@@ -10,9 +10,9 @@ public class HelloAppEngineTest {
   @Test
   public void test() throws IOException {
     MockHttpServletResponse response = new MockHttpServletResponse();
-    new HelloAppEngine().doGet(null, response);
+    new HelloAppEngine().doPost(null,response);
     Assert.assertEquals("text/plain", response.getContentType());
     Assert.assertEquals("UTF-8", response.getCharacterEncoding());
-    Assert.assertEquals("Hello USer!\r\n", response.getWriterContent().toString());
+    Assert.assertEquals("Hello App Engine!\r\n", response.getWriterContent().toString());
   }
 }
