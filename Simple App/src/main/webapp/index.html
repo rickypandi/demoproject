@@ -2,22 +2,27 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
     <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
-    <title>Hello App Engine</title>
+    <title>CMS</title>
   </head>
 
   <body>
     <h1>Contact Management System</h1>
 
     <table>
-        <form action="/employee" method="get">
-    Enter the employee email: <input type="text" name="email">
+    <h2>Enter the details to fectch</h2>
+        <form action="/employeeget" method="get">
+    <label>Enter the employee detail: <input type="text" name="name"></label>
     <input type="submit" value="submit">
 </form>
+</br>
+<h2>Enter details to Save</h2>
+<form action="/employeecreate" method="post"> 
+<label>Enter the Firstname : <input type="text" name="fname" size="35"></label><br>
+<label>Enter the Lastname  : <input type="text" name="lname" size="35"></label>
 <br>
 <br>
- <form action="/Student" method="get">
-    Enter the Student email: <input type="text" name="email">
-    <input type="submit" value="submit">
+<label>Enter the Emailid :<input type="text" name="email" size="35"></label>
+<input type="submit" value="submit">
 </form>
     </table>
   </body>
