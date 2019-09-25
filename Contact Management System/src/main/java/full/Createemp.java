@@ -1,6 +1,6 @@
-package com.app.full;
+package full;
 
-import static org.junit.Assert.assertThat;
+
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -32,10 +32,11 @@ import com.google.cloud.Date;
 
 
 @WebServlet(
-    name = "Employee_Details",
+    name = "Employee_Detail",
     urlPatterns = {"/employeecreate"}
 )
 public class Createemp extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 	private DatastoreService datastore;
 	private Entity user;
 	private String fname;
@@ -45,37 +46,46 @@ public class Createemp extends HttpServlet {
 	private String pkey;
 	private Key key;
 	private String joindate;
-	
+	//Createemp emp=new Createemp();
   
-  @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) 
       throws IOException {
-	  datastore=DatastoreServiceFactory.getDatastoreService();
 	 //String user_input=request.getParameter("email");
-       fname=request.getParameter("fname");
-	   lname=request.getParameter("lname");
-	   emailid=request.getParameter("email");
-	   joindate=request.getParameter("joindate");
-	   /*DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyy HH:mm:ss");  
-	   LocalDateTime now = LocalDateTime.now();
-	   joindate=dtf.format(now);*/
-	UUID uuid=UUID.randomUUID();
-	   pkey=uuid.toString();
-	  user=new Entity("employee Details",pkey);
-	 user.setProperty("emp_id",pkey);
-	 user.setProperty("join_date",joindate);
-	  user.setProperty("fname",fname);
-	  user.setProperty("lname", lname);
-	  user.setProperty("email", emailid);
-	 datastore.put(user);
-	  PrintWriter out=response.getWriter();
-	  key=KeyFactory.createKey("employee Details",pkey);
-
-	  out.println("Data inserted Succesfully");
-	  response.setContentType("text/plain");
-	  response.setCharacterEncoding("UTF-8");
+	  
+           fname=request.getParameter("fname");
+	       lname=request.getParameter("lname");
+	       emailid=request.getParameter("email");
+	       joindate=request.getParameter("joindate");
+	  if((fname!=null && lname!=null && emailid!=null && joindate!=null) && (!fname.isEmpty() && !lname.isEmpty() && !emailid.isEmpty() && !joindate.isEmpty())) 
+	   {
+		   datastore=DatastoreServiceFactory.getDatastoreService();
+		   UUID uuid=UUID.randomUUID();
+		   pkey=uuid.toString();
+		   user=new Entity("employee_Detail",pkey);
+		   user.setProperty("emp_id",pkey);
+		   user.setProperty("join_date",joindate);
+		   user.setProperty("fname",fname);
+		   user.setProperty("lname", lname);
+		   user.setProperty("email", emailid);
+		   datastore.put(user);
+		   key=KeyFactory.createKey("employee Details",pkey);
+		   PrintWriter out=response.getWriter();
+		   out.println("Data inserted Succesfully");
+	   }
+	 else
+	 {
+           PrintWriter em=response.getWriter();		 
+		   em.println("Fill all the fields");
+	 }
+	     //response.setContentType("text/plain");
+	     //response.setCharacterEncoding("UTF-8");
   }
 }
+
+
+/*DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyy HH:mm:ss");  
+	   LocalDateTime now = LocalDateTime.now();
+	   joindate=dtf.format(now);*/
 	  
 	  //Query que=new Query("employee Details");
 	  //PreparedQuery pq=ds.prepare(que);

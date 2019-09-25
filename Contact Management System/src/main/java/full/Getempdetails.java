@@ -1,8 +1,7 @@
-package com.app.full;
-import com.app.full.Createemp;
+package full;
+import full.Createemp;
 
 
-import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,6 +15,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.json.simple.JSONArray;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets.Details;
 import com.google.api.services.discovery.Discovery.Apis.List;
@@ -51,50 +52,62 @@ import javax.jdo.datastore.*;
 		urlPatterns= {"/employeeget"}
 		)
 public class Getempdetails extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	private String printProperties;
-	private String input;
-	private Filter propertyFilter;
-	private Filter propertyFilterId;
-	private Filter propertyFilterln;
-	private Filter propertyFilterem;
-	//private Query q;
-	private PreparedQuery pq;
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		DatastoreService datastore=DatastoreServiceFactory.getDatastoreService();
-	    input=request.getParameter("name");
-		PrintWriter out=response.getWriter();
-		IndexSpec indexSpec = IndexSpec.newBuilder().setName(input).build();
-		  Index index = SearchServiceFactory.getSearchService().getIndex(indexSpec);
-		  /*String query=input;
+	      private static final long serialVersionUID = 1L;
+	      private String printProperties;
+	      private String input;
+	      private Filter propertyFilter;
+	      private Filter propertyFilterId;
+	      private Filter propertyFilterln;
+	      private Filter propertyFilterem;
+	      private PreparedQuery pq;
+	      JSONArray jsArray = new JSONArray();
+ public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		    DatastoreService datastore=DatastoreServiceFactory.getDatastoreService();
+	        input=request.getParameter("name");
+	 if((input!=null)&&(!input.isEmpty())) 
+	    {
+		        PrintWriter out=response.getWriter();
+		        IndexSpec indexSpec = IndexSpec.newBuilder().setName(input).build();
+		        Index index = SearchServiceFactory.getSearchService().getIndex(indexSpec);
+
+		  
+                Query q=new Query("employee_Detail")
+			    .setFilter(
+			     CompositeFilterOperator.or(
+                 new com.google.appengine.api.datastore.Query.FilterPredicate("fname", FilterOperator.EQUAL, input),
+                 new com.google.appengine.api.datastore.Query.FilterPredicate("lname", FilterOperator.EQUAL, input),
+                 new com.google.appengine.api.datastore.Query.FilterPredicate("email", FilterOperator.EQUAL, input)))
+			     .addSort("join_date", Query.SortDirection.ASCENDING);	
+		
+                  pq= datastore.prepare(q);
+    
+       for(Entity res: pq.asIterable())
+       {
+			     jsArray.add(res);
+		}
+		//response.sendRedirect("json.jsp");
+		//jsArray.toJSONString();
+		
+			     out.println(jsArray);
+			     jsArray.clear();
+		
+	}
+	 else {
+		         PrintWriter out=response.getWriter();
+
+		         out.println("Enter the details to fetch");
+		         Getempdetails get=new Getempdetails();
+	 }
+}
+	
+	
+}
+/*String query=input;
 	        Results<ScoredDocument> results = index.search(query);
 	        for (ScoredDocument document :results) {
 	           System.out.print("firstname:" + document.getOnlyField("fname").getText());
 	            System.out.println("lastname:" + document.getOnlyField("lname").getText());
 	          }*/
-
-		  
-      Query q=new Query("employee Details")
-			        .setFilter(
-			            CompositeFilterOperator.or(
-new com.google.appengine.api.datastore.Query.FilterPredicate("fname", FilterOperator.EQUAL, input),
-    new com.google.appengine.api.datastore.Query.FilterPredicate("lname", FilterOperator.EQUAL, input),
-    new com.google.appengine.api.datastore.Query.FilterPredicate("email", FilterOperator.EQUAL, input)))
-			        .addSort("join_date", Query.SortDirection.ASCENDING);	
-		
-    pq= datastore.prepare(q);
-		for(Entity res: pq.asIterable()) {
-			printProperties=(String) res.getProperty("fname");
-			out.println("\n"+"FirstName: "+printProperties);
-			printProperties=(String) res.getProperty("lname");
-			out.println("\n"+"LastName: "+printProperties);
-			printProperties=(String) res.getProperty("email");
-			out.println("\n"+"Email: "+printProperties);
-			printProperties=(String)res.getProperty("join_date");
-			out.println("\n"+"joining date: "+printProperties);
-		}
-		}
-}
 //Results<ScoredDocument> re=index.search(input);
 //System.out.println(re);
 //propertyFilter = new com.google.appengine.api.datastore.Query.FilterPredicate("fname", FilterOperator.EQUAL, input);

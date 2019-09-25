@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <datastore-indexes autoGenerate="true">
-<datastore-index kind="Employee Details" ancestor="true">
+<datastore-index kind="Employee_Detail" ancestor="true">
         <property name="emp_id" direction="desc" />
         <property name="fname" direction="asc" />
         <property name="lname" direction="asc" />
