@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.UUID;
 
 import javax.jdo.PersistenceManager;
@@ -17,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets.Details;
 import com.google.api.services.discovery.Discovery.Apis.List;
@@ -60,10 +63,13 @@ public class Getempdetails extends HttpServlet {
 	      private Filter propertyFilterln;
 	      private Filter propertyFilterem;
 	      private PreparedQuery pq;
-	      JSONArray jsArray = new JSONArray();
+	      JSONObject jsObject = new JSONObject();
+	      JSONObject jsObject1 = new JSONObject();
+	      JSONArray jsArray =  new JSONArray();
  public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		    DatastoreService datastore=DatastoreServiceFactory.getDatastoreService();
 	        input=request.getParameter("name");
+	        
 	 if((input!=null)&&(!input.isEmpty())) 
 	    {
 		        PrintWriter out=response.getWriter();
@@ -80,36 +86,28 @@ public class Getempdetails extends HttpServlet {
 			     .addSort("join_date", Query.SortDirection.ASCENDING);	
 		
                   pq= datastore.prepare(q);
+                  HashMap<String,String> hmap=new HashMap<String,String>();
+                  HashMap<String,String> map=new HashMap<String,String>();
     
-       for(Entity res: pq.asIterable())
+    for(Entity res: pq.asIterable())
        {
-			     jsArray.add(res);
-		}
-		//response.sendRedirect("json.jsp");
-		//jsArray.toJSONString();
-		
-			     out.println(jsArray);
-			     jsArray.clear();
-		
-	}
-	 else {
+    
+    	   hmap.put("fname",(String) res.getProperty("fname"));
+    	   hmap.put("lname",(String) res.getProperty("lname"));
+		   hmap.put("email",(String) res.getProperty("email"));
+		   hmap.put("emp_id",(String) res.getProperty("emp_id"));
+		   out.println("\n\n\n"+jsObject.toJSONString(hmap));
+		   
+       }
+       }
+  
+   else {
 		         PrintWriter out=response.getWriter();
+                 out.println("Enter the details to fetch");
+		         
+	 
+}
+ }
+}
+	
 
-		         out.println("Enter the details to fetch");
-		         Getempdetails get=new Getempdetails();
-	 }
-}
-	
-	
-}
-/*String query=input;
-	        Results<ScoredDocument> results = index.search(query);
-	        for (ScoredDocument document :results) {
-	           System.out.print("firstname:" + document.getOnlyField("fname").getText());
-	            System.out.println("lastname:" + document.getOnlyField("lname").getText());
-	          }*/
-//Results<ScoredDocument> re=index.search(input);
-//System.out.println(re);
-//propertyFilter = new com.google.appengine.api.datastore.Query.FilterPredicate("fname", FilterOperator.EQUAL, input);
-//q = new Query("employee Details").setFilter(propertyFilter);
-		

@@ -1,7 +1,4 @@
 package full;
-
-
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
@@ -29,50 +26,73 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.cloud.Date;
 
-
-
 @WebServlet(
     name = "Employee_Detail",
     urlPatterns = {"/employeecreate"}
 )
-public class Createemp extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	private DatastoreService datastore;
-	private Entity user;
-	private String fname;
-	private String lname;
-	private String emailid;
-	private UUID uuid;
-	private String pkey;
-	private Key key;
-	private String joindate;
-	//Createemp emp=new Createemp();
-  
+ public class Createemp extends HttpServlet {
+	        private static final long serialVersionUID = 1L;
+	        HttpServletRequest request;
+	        HttpServletRequest response;
+	        private String fname;
+	        private String lname;
+	        private String emailid;
+	        private String pkey;
+			private String joindate;
+
+ public void setEmailid(String emailid) 
+          {
+	          this.emailid = emailid;
+          }
+ public void setJoindate(String joindate) 
+          {
+	        this.joindate = joindate;
+	      }
+
+ public void setFname(String fname)
+           {
+				this.fname = fname;
+			}
+
+ public void setLname(String lname) 
+           {
+				this.lname = lname;
+			}
+ public String getPkey() 
+            {
+				UUID uuid=UUID.randomUUID();
+				pkey = uuid.toString();
+                 return pkey;
+			}
+ public void setPkey(String pkey) 
+           {
+		   this.pkey = pkey;
+			}
   public void doPost(HttpServletRequest request, HttpServletResponse response) 
       throws IOException {
-	 //String user_input=request.getParameter("email");
-	  
-           fname=request.getParameter("fname");
-	       lname=request.getParameter("lname");
-	       emailid=request.getParameter("email");
-	       joindate=request.getParameter("joindate");
-	  if((fname!=null && lname!=null && emailid!=null && joindate!=null) && (!fname.isEmpty() && !lname.isEmpty() && !emailid.isEmpty() && !joindate.isEmpty())) 
-	   {
-		   datastore=DatastoreServiceFactory.getDatastoreService();
-		   UUID uuid=UUID.randomUUID();
-		   pkey=uuid.toString();
-		   user=new Entity("employee_Detail",pkey);
+	     setFname( request.getParameter("fname"));
+	     setLname(request.getParameter("lname"));
+	     setEmailid(request.getParameter("email"));
+	     setJoindate(request.getParameter("joindate"));
+	     setPkey(getPkey());
+	     
+          if((fname!=null && lname!=null && emailid!=null && joindate!=null) && (!fname.isEmpty() 
+		 && !lname.isEmpty() && !emailid.isEmpty() && !joindate.isEmpty())) 
+    {
+		   DatastoreService datastore=DatastoreServiceFactory.getDatastoreService();
+		   Entity user=new Entity("employee_Detail",pkey);
+		   
 		   user.setProperty("emp_id",pkey);
 		   user.setProperty("join_date",joindate);
 		   user.setProperty("fname",fname);
 		   user.setProperty("lname", lname);
 		   user.setProperty("email", emailid);
 		   datastore.put(user);
-		   key=KeyFactory.createKey("employee Details",pkey);
+		   Key key=KeyFactory.createKey("employee Details",pkey);
 		   PrintWriter out=response.getWriter();
 		   out.println("Data inserted Succesfully");
-	   }
-	 else
+	}
+	     else
 	 {
            PrintWriter em=response.getWriter();		 
 		   em.println("Fill all the fields");
@@ -83,41 +103,20 @@ public class Createemp extends HttpServlet {
 }
 
 
+
+
+
+
+
+
+
+
+
+
 /*DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyy HH:mm:ss");  
 	   LocalDateTime now = LocalDateTime.now();
 	   joindate=dtf.format(now);*/
 	  
-	  //Query que=new Query("employee Details");
-	  //PreparedQuery pq=ds.prepare(que);
-	  /*try {
-	   Entity employee1=null;
-			employee1=ds.get(k);
-			System.out.println(employee1);
-		} catch (EntityNotFoundException e) {
-			System.out.println("Data not found");
-		}*/
-	  //to create 2 or more entity
-	  /* Entity e1=new Entity("emp1");
-	  Entity e2=new Entity("emp2");
-	  Entity e3=new Entity("emp3");
-	   List<Entity> e4= Arrays.asList(e1,e2,e3);
-	   */
-	  /* Key k = KeyFactory.createKey("employee Details",input);
-
-	   
 	  
-	  
-	  
-	  System.out.println(k);
-	  PrintWriter out=response.getWriter();
-		try {
-			employee1 = ds.get(k);
-			out.println("The Details Matched with Your Input is "+"\n"+employee1);
-		} catch (EntityNotFoundException e) {
-			out.println("No such Record Found");
-		}
-		
-		System.out.println(employee1);*/
-
 
 
