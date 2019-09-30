@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <datastore-indexes autoGenerate="true">
 <datastore-index kind="Employee_Details" ancestor="true">
-        <property name="emp_id" direction="desc" />
-        <property name="join_date" direction="desc"/>
+        <property name="emp_id"  />
+        <property name="join_date" />
         <property name="fname" direction="asc" />
-        <property name="lname" direction="asc" />
-        <property name="email" direction= "asc"/>
+        <property name="lname"  />
+        <property name="email" />
         </datastore-index>
 </datastore-indexes>

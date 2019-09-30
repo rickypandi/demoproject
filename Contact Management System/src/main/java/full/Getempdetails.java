@@ -1,5 +1,5 @@
 package full;
-import full.Createemp;
+//import full.Createemp;
 
 
 
@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.jdo.PersistenceManager;
@@ -48,6 +49,7 @@ import com.google.cloud.datastore.DatastoreOptions;
 import com.google.cloud.datastore.StructuredQuery.OrderBy;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 
+
 import javax.jdo.datastore.*;
 
 @WebServlet(
@@ -56,16 +58,15 @@ import javax.jdo.datastore.*;
 		)
 public class Getempdetails extends HttpServlet {
 	      private static final long serialVersionUID = 1L;
-	      private String printProperties;
+	     // private String printProperties;
 	      private String input;
-	      private Filter propertyFilter;
-	      private Filter propertyFilterId;
-	      private Filter propertyFilterln;
-	      private Filter propertyFilterem;
+//	      private Filter propertyFilter;
+//	      private Filter propertyFilterId;
+//	      private Filter propertyFilterln;
+//	      private Filter propertyFilterem;
 	      private PreparedQuery pq;
-	      JSONObject jsObject = new JSONObject();
-	      JSONObject jsObject1 = new JSONObject();
-	      JSONArray jsArray =  new JSONArray();
+	      JSONObject jsObject=new JSONObject();
+	      JSONArray jsarray=new JSONArray();
  public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		    DatastoreService datastore=DatastoreServiceFactory.getDatastoreService();
 	        input=request.getParameter("name");
@@ -76,7 +77,6 @@ public class Getempdetails extends HttpServlet {
 		        IndexSpec indexSpec = IndexSpec.newBuilder().setName(input).build();
 		        Index index = SearchServiceFactory.getSearchService().getIndex(indexSpec);
 
-		  
                 Query q=new Query("employee_Detail")
 			    .setFilter(
 			     CompositeFilterOperator.or(
@@ -84,30 +84,43 @@ public class Getempdetails extends HttpServlet {
                  new com.google.appengine.api.datastore.Query.FilterPredicate("lname", FilterOperator.EQUAL, input),
                  new com.google.appengine.api.datastore.Query.FilterPredicate("email", FilterOperator.EQUAL, input)))
 			     .addSort("join_date", Query.SortDirection.ASCENDING);	
-		
                   pq= datastore.prepare(q);
-                  HashMap<String,String> hmap=new HashMap<String,String>();
-                  HashMap<String,String> map=new HashMap<String,String>();
-    
-    for(Entity res: pq.asIterable())
-       {
-    
-    	   hmap.put("fname",(String) res.getProperty("fname"));
-    	   hmap.put("lname",(String) res.getProperty("lname"));
-		   hmap.put("email",(String) res.getProperty("email"));
-		   hmap.put("emp_id",(String) res.getProperty("emp_id"));
-		   out.println("\n\n\n"+jsObject.toJSONString(hmap));
-		   
-       }
-       }
+                  
+     java.lang.Iterable<com.google.appengine.api.datastore.Entity> entities=pq.asIterable();
+     java.util.Iterator<com.google.appengine.api.datastore.Entity> entityIterator = 
+                  entities.iterator();
+     Map <String,Object> hmap=new HashMap<String,Object>();
+     Map <String,Object> hmap1=new HashMap<String,Object>();
+    	 for(Entity entity:pq.asIterable())
+    	 {
+    		 String emp_id = entity.getKey().getName();
+    	     hmap.put("fname",(String) entity.getProperty("fname"));
+     	     hmap.put("lname",(String) entity.getProperty("lname"));
+ 		     hmap.put("email",(String) entity.getProperty("email"));
+ 		     hmap.put("emp_id",(String) entity.getProperty("emp_id"));
+ 		     hmap.put("join_date",(String) entity.getProperty("join_date"));
+ 		     hmap1.put(emp_id,hmap.toString());
+ 		    //System.out.println(hmap1);
+ 		     jsarray.add(hmap1.get(emp_id));
+ 		        
+ 		   }
+    	 //System.out.println(jsarray);
+    	 jsObject.put("Employee_details",jsarray);
+    	out.println(jsObject);
+    	jsarray.clear();
+    	jsObject.clear();
+
+    	 
+	    } 
   
    else {
 		         PrintWriter out=response.getWriter();
                  out.println("Enter the details to fetch");
+   }
 		         
 	 
 }
  }
-}
+ 
 	
 
